@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mineral Haven - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/script.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Mineral Haven</h1>
+      <nav>
+        <a href="index.html" class="px-2">Home</a>
+        <a href="products1.html" class="px-2">Products 1</a>
+        <a href="products2.html" class="px-2">Products 2</a>
+        <a href="products3.html" class="px-2">Products 3</a>
+        <a href="favorites.html" class="px-2">Favorites</a>
+        <a href="cart.html" class="px-2">Cart</a>
+        <a href="register.html" class="px-2">Register</a>
+        <a href="profile.html" class="px-2">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <section class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-4">Welcome to Mineral Haven</h2>
+      <p class="text-lg">Discover the beauty of collectible minerals. Our company offers:</p>
+      <ul class="list-disc list-inside mt-4 text-left max-w-md mx-auto">
+        <li>High-quality, authentic minerals sourced globally</li>
+        <li>Expert curation for collectors and enthusiasts</li>
+        <li>Secure packaging and worldwide shipping</li>
+        <li>Exceptional customer support</li>
+      </ul>
+      <a href="register.html" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Register Now</a>
+    </section>
+
+    <section class="mb-12">
+      <h3 class="text-2xl font-bold mb-4">Top Selling Products</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-4 rounded shadow">
+          <a href="product1.html" onclick="trackProductView(1)">
+            <img src="assets/images/mineral1.png" alt="Quartz Crystal" class="w-full h-48 object-cover rounded">
+            <h4 class="text-xl font-semibold mt-2">Quartz Crystal</h4>
+            <p>$50.00</p>
+          </a>
+          <button onclick="addToFavorites(1)" class="mt-2 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Add to Favorites</button>
+          <button onclick="addToCart(1)" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
+        </div>
+        <!-- Repeat for products 2-5 -->
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-2xl font-bold mb-4">Most Viewed Products</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-4 rounded shadow">
+          <a href="product6.html" onclick="trackProductView(6)">
+            <img src="assets/images/mineral6.jpg" alt="Amethyst Geode" class="w-full h-48 object-cover rounded">
+            <h4 class="text-xl font-semibold mt-2">Amethyst Geode</h4>
+            <p>$75.00</p>
+          </a>
+          <button onclick="addToFavorites(6)" class="mt-2 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Add to Favorites</ボタ>
+          <button onclick="addToCart(6)" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
+        </div>
+        <!-- Repeat for products 7-10 -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-blue-600 text-white p-4 text-center">
+    <p>&copy; 2025 Mineral Haven. All rights reserved.</p>
+  </footer>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'961c326e6e82fd58',t:'MTc1Mjk0ODg1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
