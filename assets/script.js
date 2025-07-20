@@ -15,21 +15,29 @@ const products = [
 ];
 
 function trackProductView(productId) {
-  let viewCounts = JSON.parse(localStorage.getItem("viewCounts") || "{}");
-  viewCounts[productId] = (viewCounts[productId] || 0) + 1;
-  localStorage.setItem("viewCounts", JSON.stringify(viewCounts));
-  analytics.track("Product Viewed", { productId: productId, viewCount: viewCounts[productId] });
+  try {
+    let viewCounts = JSON.parse(localStorage.getItem("viewCounts") || "{}");
+    viewCounts[productId] = (viewCounts[productId] || 0) + 1;
+    localStorage.setItem("viewCounts", JSON.stringify(viewCounts));
+    analytics.track("Product Viewed", { productId: productId, viewCount: viewCounts[productId] });
+  } catch (error) {
+    console.error("Error tracking product view:", error);
+  }
 }
 
 function addToFavorites(productId) {
-  let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-  if (!favorites.includes(productId)) {
-    favorites.push(productId);
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    analytics.track("Added to Favorites", { productId: productId });
-    alert("Added to favorites!");
-  } else {
-    alert("This product is already in your favorites!");
+  try {
+    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    if (!favorites.includes(productId)) {
+      favorites.push(productId);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      analytics.track("Added to Favorites", { productId: productId });
+      alert("Added to favorites!");
+    } else {
+      alert("This product is already in your favorites!");
+    }
+  } catch (error) {
+    console.error("Error adding to favorites:", error);
   }
 }
 
@@ -41,174 +49,253 @@ function addToCart(productId) {
   alert("Added to cart!");
 }
 
-function registerUser() {
-  const username = document.getElementById("username").value;
-  if (username) {
-    localStorage.setItem("username", username);
-    analytics.identify(username);
-    window.location.href = "profile.html";
-  } else {
-    alert("Please enter a username.");
+function addToCart(productId) {
+  try {
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    cart.push(productId);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    analytics.track("Added to Cart", { productId: productId });
+    alert("Added to cart!");
+  } catch (error) {
+    console.error("Error adding to cart:", error);
   }
 }
 
-function displayFavorites() {
-  const favoritesList = document.getElementById("favorites-list");
-  if (!favoritesList) return;
-  const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-  favoritesList.innerHTML = "";
-  if (favorites.length === 0) {
-    favoritesList.innerHTML = "<p class='text-lg'>No favorites yet.</p>";
-    return;
-  }
-  favorites.forEach(id => {
-    const product = products.find(p => p.id === id);
-    if (product) {
-      favoritesList.innerHTML += `
-        <div class="bg-white p-4 rounded shadow">
-          <a href="product${id}.html" onclick="trackProductView(${id})">
-            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
-            <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
-            <p>$${product.price.toFixed(2)}</p>
-          </a>
-          <button onclick="addToCart(${id})" class="mt-2 bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-400">Add to Cart</button>
-        </div>
-      `;
+function registerUser() {
+  try {
+    const usernameInput = document.getElementById("username");
+    if (!usernameInput) {
+      console.error("Username input element not found on register page");
+      alert("Registration failed: Username input not found.");
+      return;
     }
-  });
+    const username = usernameInput.value.trim();
+    if (username) {
+      localStorage.setItem("username", username);
+      analytics.identify(username);
+      console.log("User registered:", username);
+      window.location.href = "profile.html";
+    } else {
+      alert("Please enter a username.");
+      console.warn("Username input is empty");
+    }
+  } catch (error) {
+    console.error("Error during registration:", error);
+    alert("Registration failed. Please try again.");
+  }
+}
+
+
+function displayFavorites() {
+  try {
+    const favoritesList = document.getElementById("favorites-list");
+    if (!favoritesList) {
+      console.error("Favorites list element not found on page");
+      return;
+    }
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    favoritesList.innerHTML = "";
+    if (favorites.length === 0) {
+      favoritesList.innerHTML = "<p class='text-lg'>No favorites yet.</p>";
+      return;
+    }
+    favorites.forEach(id => {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        favoritesList.innerHTML += `
+          <div class="bg-white p-4 rounded shadow">
+            <a href="product${id}.html" onclick="trackProductView(${id})">
+              <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
+              <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
+              <p>$${product.price.toFixed(2)}</p>
+            </a>
+            <button onclick="addToCart(${id})" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
+          </div>
+        `;
+      } else {
+        console.warn(`Product with ID ${id} not found in products array`);
+      }
+    });
+  } catch (error) {
+    console.error("Error displaying favorites:", error);
+  }
 }
 
 function displayCart() {
-  const cartList = document.getElementById("cart-list");
-  if (!cartList) return;
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  cartList.innerHTML = "";
-  if (cart.length === 0) {
-    cartList.innerHTML = "<p class='text-lg'>Your cart is empty.</p>";
-    return;
-  }
-  cart.forEach(id => {
-    const product = products.find(p => p.id === id);
-    if (product) {
-      cartList.innerHTML += `
-        <div class="bg-white p-4 rounded shadow">
-          <a href="product${id}.html" onclick="trackProductView(${id})">
-            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
-            <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
-            <p>$${product.price.toFixed(2)}</p>
-          </a>
-        </div>
-      `;
+  try {
+    const cartList = document.getElementById("cart-list");
+    if (!cartList) {
+      console.error("Cart list element not found on page");
+      return;
     }
-  });
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    cartList.innerHTML = "";
+    if (cart.length === 0) {
+      cartList.innerHTML = "<p class='text-lg'>Your cart is empty.</p>";
+      return;
+    }
+    cart.forEach(id => {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        cartList.innerHTML += `
+          <div class="bg-white p-4 rounded shadow">
+            <a href="product${id}.html" onclick="trackProductView(${id})">
+              <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
+              <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
+              <p>$${product.price.toFixed(2)}</p>
+            </a>
+          </div>
+        `;
+      } else {
+        console.warn(`Product with ID ${id} not found in products array`);
+      }
+    });
+  } catch (error) {
+    console.error("Error displaying cart:", error);
+  }
 }
 
 function displayOrderSummary() {
-  const orderSummary = document.getElementById("order-summary");
-  if (!orderSummary) return;
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  orderSummary.innerHTML = "";
-  if (cart.length === 0) {
-    orderSummary.innerHTML = "<p class='text-lg'>No items in your order.</p>";
-    return;
-  }
-  cart.forEach(id => {
-    const product = products.find(p => p.id === id);
-    if (product) {
-      orderSummary.innerHTML += `
-        <div class="bg-white p-4 rounded shadow mb-4">
-          <img src="${product.image}" alt="${product.name}" class="w-32 h-32 object-cover rounded inline-block">
-          <div class="inline-block ml-4">
-            <h4 class="text-xl font-semibold">${product.name}</h4>
-            <p>$${product.price.toFixed(2)}</p>
-            <p>${product.description}</p>
-          </div>
-        </div>
-      `;
+  try {
+    const orderSummary = document.getElementById("order-summary");
+    if (!orderSummary) {
+      console.error("Order summary element not found on page");
+      return;
     }
-  });
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    orderSummary.innerHTML = "";
+    if (cart.length === 0) {
+      orderSummary.innerHTML = "<p class='text-lg'>No items in your order.</p>";
+      return;
+    }
+    cart.forEach(id => {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        orderSummary.innerHTML += `
+          <div class="bg-white p-4 rounded shadow mb-4">
+            <img src="${product.image}" alt="${product.name}" class="w-32 h-32 object-cover rounded inline-block">
+            <div class="inline-block ml-4">
+              <h4 class="text-xl font-semibold">${product.name}</h4>
+              <p>$${product.price.toFixed(2)}</p>
+              <p>${product.description}</p>
+            </div>
+          </div>
+        `;
+      } else {
+        console.warn(`Product with ID ${id} not found in products array`);
+      }
+    });
+  } catch (error) {
+    console.error("Error displaying order summary:", error);
+  }
 }
 
 function proceedToOrder() {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if (cart.length > 0) {
-    window.location.href = "order.html";
-  } else {
-    alert("Your cart is empty.");
+  try {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (cart.length > 0) {
+      console.log("Proceeding to order with cart:", cart);
+      window.location.href = "order.html";
+    } else {
+      alert("Your cart is empty.");
+      console.warn("Cannot proceed to order: Cart is empty");
+    }
+  } catch (error) {
+    console.error("Error proceeding to order:", error);
+    alert("Failed to proceed to order. Please try again.");
   }
 }
 
 function contactSeller() {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if (cart.length > 0) {
-    analytics.track("Order Submitted", { cart: cart });
-    alert("Please contact the seller to complete your order.");
-    localStorage.setItem("cart", "[]");
-    window.location.href = "index.html";
-  } else {
-    alert("No items to order.");
+  try {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (cart.length > 0) {
+      analytics.track("Order Submitted", { cart: cart });
+      alert("Please contact the seller to complete your order.");
+      localStorage.setItem("cart", "[]");
+      console.log("Order submitted, cart cleared");
+      window.location.href = "index.html";
+    } else {
+      alert("No items to order.");
+      console.warn("Cannot submit order: Cart is empty");
+    }
+  } catch (error) {
+    console.error("Error submitting order:", error);
+    alert("Failed to submit order. Please try again.");
   }
 }
 
 function displayMostViewed() {
-  const mostViewedSection = document.getElementById("most-viewed");
-  if (!mostViewedSection) return;
-  let viewCounts = JSON.parse(localStorage.getItem("viewCounts") || "{}");
-  // Convert viewCounts to array and sort by view count
-  const sortedProducts = Object.keys(viewCounts)
-    .map(id => ({ id: parseInt(id), views: viewCounts[id] }))
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 5); // Top 5 most viewed
-  mostViewedSection.innerHTML = "";
-  if (sortedProducts.length === 0) {
-    mostViewedSection.innerHTML = "<p class='text-lg'>No products viewed yet.</p>";
-    return;
-  }
-  sortedProducts.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (product) {
-      mostViewedSection.innerHTML += `
-        <div class="bg-white p-4 rounded shadow">
-          <a href="product${product.id}.html" onclick="trackProductView(${product.id})">
-            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
-            <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
-            <p>$${product.price.toFixed(2)}</p>
-          </a>
-          <button onclick="addToFavorites(${product.id})" class="mt-2 bg-blue-100 px-4 py-2 rounded hover:bg-blue-200">Add to Favorites</button>
-          <button onclick="addToCart(${product.id})" class="mt-2 bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-400">Add to Cart</button>
-        </div>
-      `;
+  try {
+    const mostViewedSection = document.getElementById("most-viewed");
+    if (!mostViewedSection) {
+      console.error("Most viewed section not found on page");
+      return;
     }
-  });
+    let viewCounts = JSON.parse(localStorage.getItem("viewCounts") || "{}");
+    const sortedProducts = Object.keys(viewCounts)
+      .map(id => ({ id: parseInt(id), views: viewCounts[id] }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 5);
+    mostViewedSection.innerHTML = "";
+    if (sortedProducts.length === 0) {
+      mostViewedSection.innerHTML = "<p class='text-lg'>No products viewed yet.</p>";
+      return;
+    }
+  sortedProducts.forEach(item => {
+      const product = products.find(p => p.id === item.id);
+      if (product) {
+        mostViewedSection.innerHTML += `
+          <div class="bg-white p-4 rounded shadow">
+            <a href="product${product.id}.html" onclick="trackProductView(${product.id})">
+              <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded">
+              <h4 class="text-xl font-semibold mt-2">${product.name}</h4>
+              <p>$${product.price.toFixed(2)}</p>
+            </a>
+            <button onclick="addToFavorites(${product.id})" class="mt-2 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Add to Favorites</button>
+            <button onclick="addToCart(${product.id})" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
+          </div>
+        `;
+      } else {
+        console.warn(`Product with ID ${item.id} not found in products array`);
+      }
+    });
+  } catch (error) {
+    console.error("Error displaying most viewed products:", error);
+  }
 }
 
 window.onload = function() {
-  // Check for profile page access
-  if (window.location.pathname.includes("profile.html")) {
-    const username = localStorage.getItem("username");
-    if (!username) {
-      alert("Please register to access your profile.");
-      window.location.href = "register.html";
-      return;
+  try {
+    if (window.location.pathname.includes("profile.html")) {
+      const username = localStorage.getItem("username");
+      if (!username) {
+        console.warn("No username found, redirecting to register.html");
+        alert("Please register to access your profile.");
+        window.location.href = "register.html";
+        return;
+      }
+      const usernameDisplay = document.getElementById("username-display");
+      if (usernameDisplay) {
+        usernameDisplay.textContent = username;
+      } else {
+        console.error("Username display element not found on profile page");
+      }
     }
-    document.getElementById("username-display").textContent = username;
+    if (window.location.pathname.includes("favorites.html")) {
+      displayFavorites();
+    }
+    if (window.location.pathname.includes("cart.html")) {
+      displayCart();
+    }
+    if (window.location.pathname.includes("order.html")) {
+      displayOrderSummary();
+    }
+    if (window.location.pathname.includes("index.html")) {
+      displayMostViewed();
+    }
+    analytics.page();
+  } catch (error) {
+    console.error("Error in window.onload:", error);
   }
-  // Display favorites
-  if (window.location.pathname.includes("favorites.html")) {
-    displayFavorites();
-  }
-  // Display cart
-  if (window.location.pathname.includes("cart.html")) {
-    displayCart();
-  }
-  // Display order summary
-  if (window.location.pathname.includes("order.html")) {
-    displayOrderSummary();
-  }
-  // Display most viewed products on homepage
-  if (window.location.pathname.includes("index.html")) {
-    displayMostViewed();
-  }
-  // Track page view
-  analytics.page();
 };
