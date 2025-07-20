@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mineral Haven - Cart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/script.js"></script>
+</head>
+<body class="bg-blue-100 font-sans">
+  <header class="bg-blue-400 text-black p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Mineral Haven</h1>
+      <nav>
+        <a href="index.html" class="px-2">Home</a>
+        <a href="products1.html" class="px-2">Quartz</a>
+        <a href="products2.html" class="px-2">Opal</a>
+        <a href="products3.html" class="px-2">Cosmic</a>
+        <a href="favorites.html" class="px-2">Favorites</a>
+        <a href="cart.html" class="px-2">Cart</a>
+        <a href="register.html" class="px-2">Register</a>
+        <a href="profile.html" class="px-2">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <h2 class="text-3xl font-bold mb-6">Your Cart</h2>
+    <div id="cart-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <p class="text-lg">Your cart is empty.</p>
+    </div>
+    <div class="mt-6 text-right">
+      <button onclick="proceedToOrder()" class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-600">Proceed to Order</button>
+    </div>
+  </main>
+
+  <footer class="bg-blue-300 text-white p-4 text-center">
+    <p>&copy; 2025 Mineral Haven. All rights reserved.</p>
+  </footer>
+</body>
+</html>
